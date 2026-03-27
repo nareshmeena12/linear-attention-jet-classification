@@ -52,7 +52,7 @@ chan_mean, chan_std = load_channel_stats()
 
 
 class JetDataset(Dataset):
-    def __init__(self, path, labelled=True, indices=None):
+    def __init__(self, path, labelled=True, indices=None, verbose=True):
         self.labelled = labelled
 
         with h5py.File(path, 'r') as f:
@@ -68,28 +68,9 @@ class JetDataset(Dataset):
         else:
             self.indices = np.arange(len(self.imgs))
 
-        print(f"  {path.split('/')[-1]} — {len(self.indices):,} samples  "
-              f"({self.imgs.nbytes / 1e6:.0f} MB)")
-
-    def __len__(self):
-        return len(self.indices)
-
-    def __getitem__(self, i):
-        ri  = int(self.indices[i])
-        img = self.imgs[ri].astype(np.float32).transpose(2, 0, 1) / CFG['pixel_max']
-        img = (img - chan_mean.reshape(8, 1, 1)) / (chan_std.reshape(8, 1, 1) + 1e-6)
-        img = torch.tensor(img, dtype=torch.float32)
-
-        # 125x125 → 128x128 so patch size 16 divides evenly
-        img = F.pad(img, (0, 3, 0, 3), value=0.0)
-
-        if not self.labelled:
-            return img
-
-        label = torch.tensor(self.labels[ri], dtype=torch.float32)
-        # proxy mass — mean activation over spatial extent
-        mass  = img.relu().sum() / (128 * 128 * 8)
-        return img, label, mass
+        if verbose:
+            print(f"  {path.split('/')[-1]} — {len(self.indices):,} samples  "
+                  f"({self.imgs.nbytes / 1e6:.0f} MB)")
 
 
 def build_loaders(num_workers=4):
