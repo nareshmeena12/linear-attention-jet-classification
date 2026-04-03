@@ -368,7 +368,7 @@ All model weights are stored on Google Drive. Weights are excluded from the GitH
 | `xcit_pretrained_backbone.pth` | XCiT MAE backbone only | — |
 | `l2vit_pretrained_backbone.pth` | L2ViT MAE backbone only | — |
 
-> **Download:** [Google Drive weights folder](https://drive.google.com/drive/folders/linear-attention-jet-classification/weights)
+> **Download:** [Google Drive weights folder](https://drive.google.com/drive/folders/1QOgC-Odz8dEQvriTspKasuyl7K20WHiD?usp=sharing)
 
 ---
 
